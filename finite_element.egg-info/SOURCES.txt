@@ -1,0 +1,12 @@
+pyproject.toml
+setup.py
+finiteElement/Solver.py
+finiteElement/Space.py
+finiteElement/__init__.py
+finiteElement/main.py
+finite_element.egg-info/PKG-INFO
+finite_element.egg-info/SOURCES.txt
+finite_element.egg-info/dependency_links.txt
+finite_element.egg-info/requires.txt
+finite_element.egg-info/top_level.txt
+tests/test_element.py

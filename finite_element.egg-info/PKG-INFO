@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: finite-element
+Version: 1.1
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: pytest
