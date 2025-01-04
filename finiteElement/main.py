@@ -61,23 +61,26 @@ timestepsPerHour = int(3600/args.dt)
  
 space.timestep(0.1)
 psi = space.getPsi()
-#psiFilter = psiFilter(psi.shape)
-#psiFilter.append(psi)
+if args.useFilter:
+    psiFilter = psiFilter(psi.shape)
+    psiFilter.append(psi)
 
 for hour in range(16):
     for i in range(timestepsPerHour - 1):
-        #psiFilter.append(psi)
+        if args.useFilter:
+            psiFilter.append(psi)
         space.timestep(args.dt)
-    if space.cur_t > 8 * 3600:
-        space.forceVector = np.zeros(space.forceVector.shape)
     df = interp.interpolate(nodes.T,[space.cur_t/3600])[["horizontal_wind_speed", "vertical_wind_speed"]]
     updatedVelocityMatrix = df.to_numpy()
     space.timestep(args.dt, updatedVelocityMatrix)
     print(space.cur_t)
     psi = space.getPsi()
-    #psiFilter.append(psi)
+    if args.useFilter:
+        psiFilter.append(psi)
     with open("results/results" + args.fileIdentifier + ".csv", "a") as f:
-        #psi = psiFilter.getPsis()
+        if args.useFilter:
+            psiFilter.append(psi)
+            psi = psiFilter.getPsis()
         normalized_psi = (psi)/np.sum(psi)
         normalized_psi[normalized_psi < 10e-8] = 0
         f.write(str(space.cur_t) + ", " + str(np.sum(weights  * normalized_psi)) + "\n")

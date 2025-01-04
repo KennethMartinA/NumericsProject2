@@ -227,13 +227,13 @@ class sparseAdvectionDiffSpace(Space):
         self.cur_t += dt
         # RK2 step 1
         dpsidt = sparse.linalg.spsolve(self.massMatrix, 
-                                 self.forceVector - self.stiffnessMatrix @ self.Psi)
+                                 self.modifyForce() * self.forceVector - self.stiffnessMatrix @ self.Psi)
         dpsidt = dpsidt.reshape((dpsidt.shape[0],1))
         Psi1 = self.Psi.copy()
         Psi1 += dt * dpsidt
         # RK2 step 2
         dpsidt = sparse.linalg.spsolve(self.massMatrix, 
-                                 self.forceVector - self.stiffnessMatrix @ self.Psi)
+                                  self.modifyForce() * self.forceVector - self.stiffnessMatrix @ self.Psi)
         dpsidt = dpsidt.reshape((dpsidt.shape[0],1))
         Psi1 = self.Psi.copy()
         self.Psi = (self.Psi + Psi1 + dt * dpsidt) / 2
@@ -241,6 +241,12 @@ class sparseAdvectionDiffSpace(Space):
         if print_time:
             print ("total time: ", (time.time() - init_time))
 
+    def modifyForce(self):
+        """modifies force based on time elapsed
+        """
+        diagonalForcing = sparse.lil_matrix((self.numEquations, self.numEquations))
+        diagonalForcing.setdiag(np.ones(self.numEquations) * np.exp(-(self.cur_t/(3600 * 8) - 0.5)))
+        return diagonalForcing
     def reassembleStiffness(self, nodalVelocities):
         """Used by timestep to update the stiffness matrix using provided nodalVelocities.
 

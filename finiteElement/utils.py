@@ -34,6 +34,12 @@ def createMainArgParse():
                        help = "if true, will create a plot and save for each resultant psi at each" + 
                        "hour given", 
                        action=argparse.BooleanOptionalAction, default = False)
+    
+    parser.add_argument("--useFilter", 
+                    help = "if true, will also use a temporal filter by averaging values of psi over 20" +
+                    "locations in time. Recommended.",
+                    action=argparse.BooleanOptionalAction, default = False)
+
     return parser
 
 
